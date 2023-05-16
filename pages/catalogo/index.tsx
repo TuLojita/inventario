@@ -1,6 +1,7 @@
 import inventarioApi from "@/api/inventarioApi";
 import { LayoutAuth } from "@/components";
 import { IProduct } from "@/interfaces";
+import { jwt } from "@/utils";
 import { AddOutlined, Delete, Done, ErrorOutline } from "@mui/icons-material";
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
@@ -170,7 +171,26 @@ const CatalogoHome = ({ dataProducts }: Props) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ({req}) => {
+
+  const { token = '' } = req.cookies;
+  let isValidToken = false;
+
+  try {
+    await jwt.isValidToken(token);
+    isValidToken = true;
+  } catch (error) {
+    isValidToken = false;
+  }
+
+  if (!isValidToken) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      }
+    }
+  }
 
   const resProducts = await fetch("http://localhost:3000/api/product");
   const dataProducts = await resProducts.json();

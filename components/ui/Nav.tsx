@@ -59,7 +59,13 @@ export const Nav = () => {
             open={Boolean(anchorMenu)}
             onClose={handleCloseMenu}
           >
-            <MenuItem onClick={handleCloseMenu} disableRipple>
+            <MenuItem
+              onClick={() => {
+                handleCloseMenu()
+                router.push("/entradas")
+              }}
+              disableRipple
+            >
               <ListItemIcon>
                 <SystemUpdateAlt fontSize="small" />
               </ListItemIcon>

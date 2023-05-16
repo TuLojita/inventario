@@ -1,10 +1,12 @@
 import { useState, useContext } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { Done, ErrorOutline } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { LayoutAuth } from '@/components';
 import inventarioApi from '@/api/inventarioApi';
+import { jwt } from '@/utils';
 
 type FormData = {
   id: string;
@@ -121,6 +123,34 @@ const CreateProduct = () => {
       </form>
     </LayoutAuth>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+
+  const { token = '' } = req.cookies;
+  let isValidToken = false;
+
+  try {
+    await jwt.isValidToken(token);
+    isValidToken = true;
+  } catch (error) {
+    isValidToken = false;
+  }
+
+  if (!isValidToken) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {
+
+    }
+  }
 }
 
 export default CreateProduct
