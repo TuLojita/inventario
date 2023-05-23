@@ -1,6 +1,9 @@
+import { GetServerSideProps } from 'next';
 import { LayoutAuth } from "@/components"
-import { Box, Card, CardActionArea, CardContent, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { Box, Card, CardContent, Fab, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { jwt } from '@/utils';
+import { IEntry } from '@/interfaces';
+import { Add, Delete } from '@mui/icons-material';
 
 function createData(
   id: string,
@@ -10,269 +13,169 @@ function createData(
   return { id, name, quantity };
 }
 
-const rows = [
-  createData('0001', "Harina Saco", 5),
-  createData('0002', "Harina Kilo", 25),
-  createData('0003', "Harina Pan Paca", 50),
-  createData('0004', "Harina Pan Kilo", 158),
-  createData('0005', "Levadura Kilo", 30),
-];
+interface Props {
+  dataEntries: IEntry[];
+}
 
-const EntradasPage = () => {
+const EntradasPage = ({ dataEntries }: Props) => {
+
+  const rows = [
+    createData('0001', "Harina Saco", 5),
+    createData('0002', "Harina Kilo", 25),
+    createData('0003', "Harina Pan Paca", 50),
+    createData('0004', "Harina Pan Kilo", 158),
+    createData('0005', "Levadura Kilo", 30),
+  ];
 
   return (
     <LayoutAuth title="Entradas">
       <Box
         sx={{
-          padding: "20px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px"
+          position: "relative",
         }}
       >
-        <Card
+        <Box
           sx={{
+            position: "fixed",
+            bottom: "0",
+            left: "0",
+            padding: '16px',
             width: '100%',
-            backgroundColor: "#2196f3",
+            display: "flex",
+            justifyContent: 'space-between',
+            gap: '32px',
           }}
         >
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between"
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="h5"
-                color="white"
-              >
-                #216400
-              </Typography>
-              <Typography
-                gutterBottom
-                color="white"
-              >
-                14/05/2023 - 11:28
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '6px'
-              }}
-            >
-              <TableContainer elevation={0} component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ width: '160px' }}>ID</TableCell>
-                      <TableCell sx={{ flex: 1 }}>Nombre</TableCell>
-                      <TableCell sx={{ width: '160px' }}>Cantidad</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.quantity}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card
+          <Fab color='error' variant="extended">
+            <Delete sx={{ mr: 1 }} />
+            Eliminar
+          </Fab>
+          <Fab color='primary' variant="extended">
+            <Add sx={{ mr: 1 }} />
+            Crear
+          </Fab>
+        </Box>
+        <Box
           sx={{
-            width: '100%',
-            backgroundColor: "#2196f3",
+            padding: "20px 16px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: 'center',
+            gap: "8px",
           }}
         >
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between"
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="h5"
-                color="white"
-              >
-                #216400
-              </Typography>
-              <Typography
-                gutterBottom
-                color="white"
-              >
-                14/05/2023 - 11:28
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '6px'
-              }}
-            >
-              <TableContainer elevation={0} component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ width: '160px' }}>ID</TableCell>
-                      <TableCell sx={{ flex: 1 }}>Nombre</TableCell>
-                      <TableCell sx={{ width: '160px' }}>Cantidad</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          {
+            dataEntries.length > 0
+              ? (
+                dataEntries.map(entry => (
+                  <Card
+                    key={entry.bill}
+                    sx={{
+                      maxWidth: '700px',
+                      width: "100%",
+                      backgroundColor: "#2196f3",
+                    }}
+                  >
+                    <CardContent
+                      sx={{
+                        padding: "16px !important"
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between"
+                        }}
                       >
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.quantity}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card
-          sx={{
-            width: '100%',
-            backgroundColor: "#2196f3",
-          }}
-        >
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between"
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="h5"
-                color="white"
-              >
-                #216400
-              </Typography>
-              <Typography
-                gutterBottom
-                color="white"
-              >
-                14/05/2023 - 11:28
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '6px'
-              }}
-            >
-              <TableContainer elevation={0} component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ width: '160px' }}>ID</TableCell>
-                      <TableCell sx={{ flex: 1 }}>Nombre</TableCell>
-                      <TableCell sx={{ width: '160px' }}>Cantidad</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          component="h5"
+                          color="white"
+                        >
+                          #{entry.bill}
+                        </Typography>
+                        <Typography
+                          gutterBottom
+                          color="white"
+                        >
+                          {entry.date}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          backgroundColor: 'white',
+                          borderRadius: '6px'
+                        }}
                       >
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.quantity}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </CardContent>
-        </Card>
-        <Card
-          sx={{
-            width: '100%',
-            backgroundColor: "#2196f3",
-          }}
-        >
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between"
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="h5"
-                color="white"
-              >
-                #216400
-              </Typography>
-              <Typography
-                gutterBottom
-                color="white"
-              >
-                14/05/2023 - 11:28
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '6px'
-              }}
-            >
-              <TableContainer elevation={0} component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ width: '160px' }}>ID</TableCell>
-                      <TableCell sx={{ flex: 1 }}>Nombre</TableCell>
-                      <TableCell sx={{ width: '160px' }}>Cantidad</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.quantity}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </CardContent>
-        </Card>
+                        <TableContainer elevation={0} component={Paper}>
+                          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell sx={{ width: '160px' }}>ID</TableCell>
+                                <TableCell sx={{ flex: 1 }}>Nombre</TableCell>
+                                <TableCell sx={{ width: '160px' }}>Cantidad</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {entry.products.map((product) => (
+                                <TableRow
+                                  key={product.id}
+                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                  <TableCell>{product.id}</TableCell>
+                                  <TableCell>{product.name}</TableCell>
+                                  <TableCell>{product.quantity}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Typography textAlign="center">
+                  No hay datos para mostrar
+                </Typography>
+              )
+          }
+        </Box>
       </Box>
     </LayoutAuth>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+
+  const { token = '' } = req.cookies;
+  let isValidToken = false;
+
+  try {
+    await jwt.isValidToken(token);
+    isValidToken = true;
+  } catch (error) {
+    isValidToken = false;
+  }
+
+  if (!isValidToken) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      }
+    }
+  }
+
+  const resEntries = await fetch("http://localhost:3000/api/entry");
+  const dataEntries = await resEntries.json();
+
+  return {
+    props: {
+      dataEntries
+    }
+  }
 }
 
 export default EntradasPage

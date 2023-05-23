@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 
 import { AccountCircle, BarChart, ListAlt, Logout, Menu as MenuIcon, Person, PersonAdd, SystemUpdateAlt } from "@mui/icons-material"
-import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Box, ListItemIcon, ListItemText, Divider } from "@mui/material"
+import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Box, ListItemIcon, ListItemText, Divider, Button } from "@mui/material"
 import { AuthContext } from "@/context/auth";
 import { useRouter } from "next/router";
 
@@ -31,74 +31,51 @@ export const Nav = () => {
 
   return (
     <AppBar position="static" elevation={0}>
-      <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          aria-controls="menu"
-          aria-haspopup="true"
-          onClick={handleMenu}
-          sx={{ mr: 2 }}
+      <Toolbar
+        sx={{
+          display: 'flex',
+          justifyContent: "space-between",
+          gap: '32px'
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "32px"
+          }}
         >
-          <MenuIcon />
-        </IconButton>
-        <Menu
-            id="menu"
-            anchorEl={anchorMenu}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
+          <Button
+            variant={router.pathname === "/entradas" ? "outlined" : "text"}
+            color="inherit"
+            startIcon={<SystemUpdateAlt />}
+            onClick={() => {
+              router.push("/entradas")
             }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
+          >Entradas</Button>
+          <Button
+            color="inherit"
+            startIcon={<SystemUpdateAlt sx={{ rotate: '180deg' }} />}
+            onClick={() => {
+              router.push("/entradas")
             }}
-            open={Boolean(anchorMenu)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem
-              onClick={() => {
-                handleCloseMenu()
-                router.push("/entradas")
-              }}
-              disableRipple
-            >
-              <ListItemIcon>
-                <SystemUpdateAlt fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Entradas</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleCloseMenu} disableRipple>
-              <ListItemIcon>
-                <SystemUpdateAlt fontSize="small" sx={{ rotate: '180deg' }} />
-              </ListItemIcon >
-              <ListItemText>Salidas</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleCloseMenu} disableRipple>
-              <ListItemIcon>
-                <BarChart fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Movimientos</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleCloseMenu()
-                router.push("/catalogo")
-              }}
-              disableRipple
-            >
-              <ListItemIcon>
-                <ListAlt fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Catálogo</ListItemText>
-            </MenuItem>
-          </Menu>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          CSII
-        </Typography>
+          >Salidas</Button>
+          <Button
+            color="inherit"
+            startIcon={<BarChart />}
+            onClick={() => {
+              router.push("/entradas")
+            }}
+          >Movimientos</Button>
+          <Button
+            variant={router.pathname === "/catalogo" ? "outlined" : "text"}
+            color="inherit"
+            startIcon={<ListAlt />}
+            onClick={() => {
+              router.push("/catalogo")
+            }}
+          >Catálogo</Button>
+        </Box>
         <Box>
           <IconButton
             size="large"
@@ -133,7 +110,7 @@ export const Nav = () => {
               <ListItemIcon>
                 <Person fontSize="small" />
               </ListItemIcon>
-              <ListItemText>{ user?.name }</ListItemText>
+              <ListItemText>{user?.name}</ListItemText>
             </MenuItem>
             <Divider />
             {

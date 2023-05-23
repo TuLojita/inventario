@@ -1,2 +1,2 @@
 
-export { default as lojitaApi } from "./inventarioApi";
+export { default as inventarioApi } from "./inventarioApi";

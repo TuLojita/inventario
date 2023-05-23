@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import NextLink from 'next/link';
 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 
@@ -23,15 +23,18 @@ const LoginPage = () => {
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onLoginUser = async ({ identity, password }: FormData) => {
 
     setShowError(false);
+    setLoading(true);
 
     const isValidLogin = await loginUser(identity, password);
 
     if (!isValidLogin) {
       setShowError(true);
+      setLoading(false);
       setTimeout(() => setShowError(false), 3000);
       return;
     }
@@ -103,14 +106,28 @@ const LoginPage = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  color="primary"
-                  size='large'
-                  variant='contained'
-                  fullWidth>
-                  Entrar
-                </Button>
+                {
+                  !loading ? (
+                    <Button
+                      type="submit"
+                      color="primary"
+                      size='large'
+                      variant='contained'
+                      fullWidth>
+                      Entrar
+                    </Button>
+                  ) : (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )
+                }
+                
               </Grid>
             </Grid>
           </Box>
